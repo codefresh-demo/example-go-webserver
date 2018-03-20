@@ -1,0 +1,17 @@
+ARG GOLANG_IMAGE=alexchcodefresh/alpine:3.7-golang-aarch64
+
+FROM ${GOLANG_IMAGE} as builder
+
+WORKDIR /myapp
+
+COPY . .
+RUN env GOOS=linux GOARCH=arm64 go build -o app
+
+FROM alpine
+
+COPY --from=builder /myapp /myapp 
+
+WORKDIR /myapp
+EXPOSE 8080
+
+ENTRYPOINT ["./app"]
